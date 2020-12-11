@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blog Tracker | Home</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href=" "
+    />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700|Montserrat:300" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/public/style.css" />
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  </head>
+  <body>
+    <header>
+      <!-- Nav Bar-->
+    <div class="topnav" id="myTopnav">
+  <a href="/" class="active">Home</a>
+  <a href="/{projects}">Blog Posts</a>
+  <a href="#contact">Contact</a>
+  <a href="/about">About</a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+      <h1>
+        Blog Post Tracker
+      </h1>
+      <hr style="margin: 0 208px" />
+    </header>
+    <p class="para-home-section">
+      Blog Post Tracker allows users to directly make posts to data base servers, that are then rendered, updated, and deleted by real-time, 
+      by users. For instructions on the usage of the web application, please go to the about page.
+    </p>
+    <section style="margin: 0 50px;">
+  
+    
+     
+      <h3>Additional Blog Features (API Tests)</h3>
+
+    </section>
+  
+    <section id="testui" style="margin-left: 50px;">
+
+    <div class="container">    
+      <!-- Form 1 -->
+      <h3 class="header-form-first">Submit issue on <i>apitest</i></h3>
+      <div class="form-container">
+        <form id="testForm" class="border">
+        <input
+          type="text"
+          name="issue_title"
+          placeholder="*Title"
+          required="true"
+        /><br />
+        <textarea
+          type="text"
+          name="issue_text"
+          placeholder="*Text"
+          required="true"
+        ></textarea
+        ><br />
+        <input
+          type="text"
+          name="created_by"
+          placeholder="*Created by"
+          required="true"
+        /><br />
+        <input
+          type="text"
+          name="assigned_to"
+          placeholder="(opt)Assigned to"
+        /><br />
+        <input
+          type="text"
+          name="status_text"
+          placeholder="(opt)Status text"
+        /><br />
+        <button type="submit">Submit Issue</button>
+      </form>
+      <br />
+      </div>
+
+      
+      
+      
+      <!-- Form 2 -->
+      <h3 class="header-form-second">
+        Update issue on <i>apitest</i> (Change any or all to update issue on the
+        _id supplied)
+      </h3>
+      <div class="form-container">
+      <form id="testForm2" class="border">
+        <input
+          type="text"
+          name="_id"
+          placeholder="*_id"
+          required="true"
+        /><br />
+        <input
+          type="text"
+          name="issue_title"
+          placeholder="(opt)Title"
+        /><br />
+        <textarea
+          type="text"
+          name="issue_text"
+          placeholder="(opt)Text"
+        ></textarea
+        ><br />
+        <input
+          type="text"
+          name="created_by"
+          placeholder="(opt)Created by"
+        /><br />
+        <input
+          type="text"
+          name="assigned_to"
+          placeholder="(opt)Assigned to"
+        /><br />
+        <input
+          type="text"
+          name="status_text"
+          placeholder="(opt)Status text"
+        /><br />
+        <label
+          ><input type="checkbox" name="open" value="false" /> Check to close
+          issue</label
+        ><br />
+        <button type="submit">Submit Issue</button>
+      </form>
+      <br />
+      </div>
+      
+      <!-- Form 3 -->
+      <h3 class="header-form-third">Delete issue on <i>apitest</i></h3>
+      <div class="form-container">
+      <form id="testForm3" class="border">
+        <input
+          type="text"
+          name="_id"
+          placeholder="_id"
+          required=""
+        /><br />
+        <button type="submit">Delete Issue</button>
+      </form>
+      </div>
+          
+      <code id="jsonResult"></code>
+    
+    </div>
+      
+     
+    </section>
+    <hr style="margin: 50px; margin-top: 200px" />
+    <!-- Your web-app is https, so your scripts need to be too -->
+    <script
+      src="https://code.jquery.com/jquery-2.2.1.min.js"
+      integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(function() {
+        $("#testForm").submit(function(e) {
+          $.ajax({
+            url: "/api/issues/apitest",
+            type: "post",
+            data: $("#testForm").serialize(),
+            success: function(data) {
+              $("#jsonResult").text(JSON.stringify(data));
+            }
+          });
+          e.preventDefault();
+        });
+        $("#testForm2").submit(function(e) {
+          $.ajax({
+            url: "/api/issues/apitest",
+            type: "put",
+            data: $("#testForm2").serialize(),
+            success: function(data) {
+              $("#jsonResult").text(JSON.stringify(data));
+            }
+          });
+          e.preventDefault();
+        });
+        $("#testForm3").submit(function(e) {
+          $.ajax({
+            url: "/api/issues/apitest",
+            type: "delete",
+            data: $("#testForm3").serialize(),
+            success: function(data) {
+              $("#jsonResult").text(JSON.stringify(data));
+            }
+          });
+          e.preventDefault();
+        });
+      });
+    </script>
+    <script>
+      //Nar bar functionality
+      function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+    </script>
+    <footer>
+      <div class="footer">
+        <div class="footer container">
+      <h2 class="footer-h1">Blog Post/Issue Tracker</h2>
+      <div class="social-media">
+        <div class="social-media-item">
+          <a href="https://github.com/DanteLentsoe" target="blank_" class="icon-link"><i class="fab fa-github"></i></a>
+        </div>
+        <div class="social-media-item">
+          <a href="https://www.linkedin.com/in/dante-lentsoe-2b6566148/" target="blank_" class="icon-link"><i class="fab fa-linkedin"></i></a>
+        </div>
+        <div class="social-media-item">
+          <a href="https://dantelentsoe.netlify.app/" target="blank_" class="icon-link"><i class="fab fa-dev"></i></a>
+        </div>
+      </div>
+      <p>Copyright © 2020 Developed by <a href="https://dantelentsoe.netlify.app/" class="name-link" style="text-decoration:none; color:pink;"> Dante Lentsoe. </a> All rights reserved</p>
+    </div>
+      </div>
+    </footer>
+    <div id="contact"></div>
+  </body>
+</html>

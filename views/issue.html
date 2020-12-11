@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blog Tracker | Blog Posts</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href=" "
+    />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700|Montserrat:300" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/public/style.css" />
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  </head>
+  <body>
+    <header>
+      <!-- Nav Bar-->
+    <div class="topnav" id="myTopnav">
+  <a href="/" class="active">Home</a>
+  <a href="/{projects}">Blog Posts</a>
+  <a href="#contact">Contact</a>
+  <a href="/about">About</a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+      <h1 id="projectTitle"></h1>
+    </header>
+    <center>
+      <div id="submitNewIssue">
+        <br />
+        <h3 class="issue-sub-heading">Submit a new issue:</h3>
+        <div class="form-container">
+        <form id="newIssue" method="post" action="/api/">
+          <input
+            type="text"
+            name="issue_title"
+            placeholder="*Title"
+            required="true"
+          /><br />
+          <textarea
+            type="text"
+            name="issue_text"
+            placeholder="*Text"
+            required="true"
+          ></textarea
+          ><br />
+          <input
+            type="text"
+            name="created_by"
+            placeholder="*Created by"
+            required="true"
+          />
+          <input
+            type="text"
+            name="assigned_to"
+            placeholder="(opt)Assigned to"
+          />
+          <input
+            type="text"
+            name="status_text"
+            placeholder="(opt)Status text"
+          /><br />
+          <button type="submit">Submit Issue</button>
+        </form>
+        </div>
+      </div>
+
+      <div id="issueDisplay"></div>
+
+      <hr style="margin: 50px; margin-top: 200px" />
+    </center>
+
+    <script
+      src="https://code.jquery.com/jquery-2.2.1.min.js"
+      integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(function() {
+        let currentProject = window.location.pathname.replace(/\//g, "");
+        let url = "/api/issues/" + currentProject;
+        $("#projectTitle").text("All issues for: " + currentProject);
+        $.ajax({
+          type: "GET",
+          url: url,
+          success: function(data) {
+            let issues = [];
+            data.forEach(function(ele) {
+              console.log(ele);
+              let openstatus;
+              ele.open ? (openstatus = "open") : (openstatus = "closed");
+              let single = [
+                '<div class="issue ' + openstatus + '">',
+                '<p class="id">id: ' + ele._id + "</p>",
+                "<h3>" + ele.issue_title + " -  (" + openstatus + ")</h3>",
+                "<br>",
+                "<p>" + ele.issue_text + "</p>",
+                "<p>" + ele.status_text + "</p>",
+                "<br>",
+                '<p class="id"><b>Created by:</b> ' +
+                  ele.created_by +
+                  "  <b>Assigned to:</b> " +
+                  ele.assigned_to,
+                '<p class="id"><b>Created on:</b> ' +
+                  ele.created_on +
+                  "  <b>Last updated:</b> " +
+                  ele.updated_on,
+                '<br><a href="#" class="closeIssue" id="' +
+                  ele._id +
+                  '">close?</a> <a href="#" class="deleteIssue" id="' +
+                  ele._id +
+                  '">delete?</a>',
+                "</div>"
+              ];
+              issues.push(single.join(""));
+            });
+            $("#issueDisplay").html(issues.join(""));
+          }
+        });
+
+        $("#newIssue").submit(function(e) {
+          e.preventDefault();
+          $(this).attr("action", "/api/issues/" + currentProject);
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: $(this).serialize(),
+            success: function(data) {
+              window.location.reload(true);
+            }
+          });
+        });
+
+        $("#issueDisplay").on("click", ".closeIssue", function(e) {
+          let url = "/api/issues/" + currentProject;
+          $.ajax({
+            type: "PUT",
+            url: url,
+            data: { _id: $(this).attr("id"), open: false },
+            success: function(data) {
+              alert(data);
+              window.location.reload(true);
+            }
+          });
+          e.preventDefault();
+        });
+        $("#issueDisplay").on("click", ".deleteIssue", function(e) {
+          let url = "/api/issues/" + currentProject;
+          $.ajax({
+            type: "DELETE",
+            url: url,
+            data: { _id: $(this).attr("id") },
+            success: function(data) {
+              alert(data);
+              window.location.reload(true);
+            }
+          });
+          e.preventDefault();
+        });
+      });
+    </script>
+    <script>
+      //Nar bar functionality
+      function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+    </script>
+   <footer>
+      <div class="footer">
+        <div class="footer container">
+      <h2 class="footer-h1">Blog Post/Issue Tracker</h2>
+      <div class="social-media">
+        <div class="social-media-item">
+          <a href="https://github.com/DanteLentsoe" target="blank_" class="icon-link"><i class="fab fa-github"></i></a>
+        </div>
+        <div class="social-media-item">
+          <a href="https://www.linkedin.com/in/dante-lentsoe-2b6566148/" target="blank_" class="icon-link"><i class="fab fa-linkedin"></i></a>
+        </div>
+        <div class="social-media-item">
+          <a href="https://dantelentsoe.netlify.app/" target="blank_" class="icon-link"><i class="fab fa-dev"></i></a>
+        </div>
+      </div>
+      <p>Copyright © 2020 Developed by <a href="https://dantelentsoe.netlify.app/" class="name-link" style="text-decoration:none; color:pink;"> Dante Lentsoe. </a> All rights reserved</p>
+    </div>
+      </div>
+    </footer>
+    <div id="contact"></div>
+  </body>
+</html>
